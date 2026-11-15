@@ -1,0 +1,124 @@
+# Private graders for the public vgi.agent_test_tasks in the worker's catalog metadata.
+# `vgi-lint lint --ai` (make lint-ai) runs an agent on each prompt and grades it against
+# reference_sql. See https://github.com/Query-farm/vgi-lint-check (VGI920).
+#
+# Every relation needs a `datahub` secret. To grade offline, start the replay server
+# (`.venv/bin/python test/mock_datahub/server.py --port 5057`) and create
+#   CREATE SECRET (TYPE datahub, GMS_URL 'http://127.0.0.1:5057');
+# in the session the agent uses; the answers below are the fixture's (test/fixtures/datahub.json).
+tasks:
+  - name: snowflake_tables_per_schema
+    unordered: true
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT schema, count(*) AS datasets FROM datahub.main.datasets
+      WHERE platform = 'snowflake' GROUP BY schema
+  - name: pii_columns
+    unordered: true
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT qualified_name, column_name FROM datahub.main.columns WHERE list_contains(tags, 'pii')
+  - name: failing_assertions
+    unordered: true
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT DISTINCT qualified_name FROM datahub.main.assertions WHERE last_status = 'failed'
+  - name: fct_orders_upstreams
+    unordered: true
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT qualified_name FROM datahub.main.lineage(
+        'urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)', max_hops := 20)
+      WHERE entity_type = 'dataset'
+  - name: schema_containers
+    unordered: true
+    ignore_column_names: true
+    reference_sql: SELECT name FROM datahub.main.containers WHERE subtype = 'Schema'
+  - name: looker_dashboard_views
+    unordered: true
+    ignore_column_names: true
+    reference_sql: SELECT name, view_count FROM datahub.main.dashboards WHERE platform = 'looker'
+  - name: line_charts
+    ignore_column_names: true
+    reference_sql: SELECT name FROM datahub.main.charts WHERE chart_type = 'LINE'
+  - name: airflow_pipelines
+    ignore_column_names: true
+    reference_sql: SELECT name FROM datahub.main.data_flows WHERE platform = 'airflow'
+  - name: task_outputs
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT unnest(output_dataset_ids) AS dataset_id FROM datahub.main.data_jobs WHERE name = 'load_customers'
+  - name: group_owned_assets
+    unordered: true
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT g.display_name, count(*) AS assets FROM datahub.main.owners o
+      JOIN datahub.main.groups g ON g.id = o.owner_id GROUP BY g.display_name
+  - name: tag_colors
+    unordered: true
+    ignore_column_names: true
+    reference_sql: SELECT name, color FROM datahub.main.tags
+  - name: revenue_terms
+    ignore_column_names: true
+    reference_sql: SELECT name FROM datahub.main.glossary_terms WHERE parent_path[-1] = 'Revenue'
+  - name: top_level_nodes
+    unordered: true
+    ignore_column_names: true
+    reference_sql: SELECT name FROM datahub.main.glossary_nodes WHERE parent_node_id IS NULL
+  - name: domain_sizes
+    unordered: true
+    ignore_column_names: true
+    reference_sql: SELECT name, asset_count FROM datahub.main.domains
+  - name: product_domains
+    unordered: true
+    ignore_column_names: true
+    reference_sql: SELECT name, domain FROM datahub.main.data_products
+  - name: suspended_users
+    ignore_column_names: true
+    reference_sql: SELECT username FROM datahub.main.users WHERE NOT active
+  - name: column_lineage_fct
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT upstream_qualified_name, upstream_column FROM datahub.main.lineage_edges
+      WHERE level = 'column' AND downstream_qualified_name = 'analytics.marts.fct_orders'
+        AND downstream_column = 'gross_revenue'
+  - name: assertion_failures
+    unordered: true
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT qualified_name, count(*) FILTER (WHERE status = 'failed') AS failures
+      FROM datahub.main.assertion_results GROUP BY qualified_name
+  - name: latest_row_counts
+    unordered: true
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT qualified_name, max_by(row_count, profiled_at) AS row_count
+      FROM datahub.main.dataset_profiles GROUP BY qualified_name
+  - name: last_write
+    unordered: true
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT qualified_name, max(operation_at) AS last_write FROM datahub.main.operations GROUP BY qualified_name
+  - name: most_queried
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT qualified_name FROM datahub.main.usage WHERE time_range = 'MONTH' ORDER BY query_count DESC LIMIT 1
+  - name: open_incidents
+    ignore_column_names: true
+    reference_sql: SELECT title FROM datahub.main.incidents WHERE state = 'ACTIVE'
+  - name: search_orders
+    unordered: true
+    ignore_column_names: true
+    reference_sql: SELECT name FROM datahub.main.search('orders') WHERE entity_type = 'dataset'
+  - name: urn_join_key
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT datahub.main.dataset_qualified_name(
+        'urn:li:dataset:(urn:li:dataPlatform:snowflake,ANALYTICS.Marts.FCT_ORDERS,PROD)')
+  - name: urn_platform
+    ignore_column_names: true
+    reference_sql: >-
+      SELECT datahub.main.parse_dataset_urn('urn:li:dataset:(urn:li:dataPlatform:bigquery,proj.ds.events,DEV)').platform
+  - name: build_urn
+    ignore_column_names: true
+    reference_sql: SELECT datahub.main.dataset_urn('bigquery', 'proj.ds.events', 'DEV')

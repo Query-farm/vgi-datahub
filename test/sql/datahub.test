@@ -1,0 +1,441 @@
+# name: test/sql/datahub.test
+# description: SQL tests for the datahub worker against the strict DataHub GraphQL replay server
+# group: [datahub]
+
+require vgi
+
+require-env DATAHUB_WORKER
+
+require-env DATAHUB_MOCK
+
+require-env DATAHUB_MOCK_AUTH
+
+require-env DATAHUB_MOCK_STRICT
+
+statement ok
+ATTACH 'datahub' (TYPE vgi, LOCATION '{DATAHUB_WORKER}');
+
+# ---------------------------------------------------------------- configuration errors
+
+statement error
+SELECT count(*) FROM datahub.main.datasets;
+----
+<REGEX>:.*no datahub secret found.*
+
+# PAGE_SIZE 2 makes every scan page through several scroll requests.
+statement ok
+CREATE OR REPLACE SECRET dh (TYPE datahub, GMS_URL '{DATAHUB_MOCK}', FRONTEND_URL 'https://datahub.example.com', PAGE_SIZE '2');
+
+# ---------------------------------------------------------------- datasets
+
+query TTTTTT
+SELECT qualified_name, platform, database, schema, name, subtype FROM datahub.main.datasets ORDER BY qualified_name;
+----
+analytics.marts.dim_customers	snowflake	analytics	marts	dim_customers	Table
+analytics.marts.fct_orders	snowflake	analytics	marts	fct_orders	Table
+analytics.raw.customers	snowflake	analytics	raw	customers	Table
+analytics.raw.orders	snowflake	analytics	raw	orders	Table
+analytics.staging.stg_orders	snowflake	analytics	staging	stg_orders	View
+app.public.users	postgres	app	public	users	Table
+orders.events	kafka	NULL	NULL	orders.events	Topic
+
+# Shared catalog columns, the UI-edited description winning, lists and the UI link.
+query TTTTTTTT
+SELECT catalog_tool, description, owners, tags, glossary_terms, domain, deprecated, url
+FROM datahub.main.datasets WHERE qualified_name = 'analytics.marts.fct_orders';
+----
+datahub	Order facts: one row per order, revenue in USD.	['urn:li:corpGroup:analytics', 'urn:li:corpuser:asmith']	[tier1, finance]	[Gross Revenue]	Sales	false	https://datahub.example.com/dataset/urn%3Ali%3Adataset%3A%28urn%3Ali%3AdataPlatform%3Asnowflake%2Canalytics.marts.fct_orders%2CPROD%29
+
+query TTTT
+SELECT platform_instance, full_name, custom_properties['retention_days'], created_at
+FROM datahub.main.datasets WHERE platform IN ('postgres', 'snowflake') AND name IN ('users', 'orders') ORDER BY platform;
+----
+prod-pg	prod-pg.app.public.users	NULL	NULL
+NULL	analytics.raw.orders	365	2025-06-01 00:00:00+00
+
+query T
+SELECT qualified_name FROM datahub.main.datasets WHERE deprecated;
+----
+analytics.marts.dim_customers
+
+# ---------------------------------------------------------------- pushdown (the strict mock refuses unfiltered dataset scans)
+
+statement ok
+CREATE OR REPLACE SECRET dh (TYPE datahub, GMS_URL '{DATAHUB_MOCK_STRICT}', PAGE_SIZE '2');
+
+statement error
+SELECT count(*) FROM datahub.main.datasets;
+----
+<REGEX>:.*strict mock: unfiltered DATASET scroll refused.*
+
+query IT
+SELECT count(*), max(url) FROM datahub.main.datasets WHERE platform = 'snowflake';
+----
+5	NULL
+
+query T
+SELECT qualified_name FROM datahub.main.datasets WHERE domain_id = 'urn:li:domain:sales' AND environment = 'PROD' ORDER BY ALL;
+----
+analytics.marts.dim_customers
+analytics.marts.fct_orders
+
+query T
+SELECT qualified_name FROM datahub.main.datasets WHERE container_id = 'urn:li:container:sf_raw' ORDER BY ALL;
+----
+analytics.raw.customers
+analytics.raw.orders
+
+# id = / IN fetches the URNs directly (entities(urns:)), no search at all.
+query T
+SELECT name FROM datahub.main.datasets
+WHERE id IN ('urn:li:dataset:(urn:li:dataPlatform:kafka,orders.events,PROD)', 'urn:li:dataset:(urn:li:dataPlatform:snowflake,no.such.table,PROD)');
+----
+orders.events
+
+query ITTTTTTTT
+SELECT ordinal_position, column_name, data_type, native_data_type, nullable, is_primary_key, description, tags, glossary_terms
+FROM datahub.main.columns
+WHERE dataset_id = 'urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)'
+ORDER BY ordinal_position;
+----
+1	order_id	NUMBER	NUMBER(38,0)	false	true	Order key.	[]	[]
+2	customer_id	NUMBER	NUMBER(38,0)	true	false	NULL	[]	[Customer ID]
+3	gross_revenue	NUMBER	NUMBER(14,2)	true	false	NULL	[]	[Gross Revenue]
+4	order_date	DATE	DATE	true	false	NULL	[]	[]
+
+# A URN built by the scalar works as the id filter.
+query T
+SELECT qualified_name FROM datahub.main.datasets WHERE id = datahub.main.dataset_urn('snowflake', 'analytics.raw.orders');
+----
+analytics.raw.orders
+
+# Contradictory filters short-circuit to no rows without any request.
+query I
+SELECT count(*) FROM datahub.main.datasets WHERE platform = 'snowflake' AND platform = 'kafka';
+----
+0
+
+statement ok
+CREATE OR REPLACE SECRET dh (TYPE datahub, GMS_URL '{DATAHUB_MOCK}', FRONTEND_URL 'https://datahub.example.com', PAGE_SIZE '2');
+
+# ---------------------------------------------------------------- columns
+
+# v2 field paths become dotted names; UI-edited tags and descriptions merge in.
+query TTTT
+SELECT qualified_name, column_name, field_path, description FROM datahub.main.columns
+WHERE list_contains(tags, 'pii') ORDER BY qualified_name, column_name;
+----
+analytics.marts.dim_customers	email	email	NULL
+analytics.raw.customers	address.city	[version=2.0].[type=struct].[type=struct].address.[type=string].city	City of the billing address.
+analytics.raw.customers	email	email	Login email.
+app.public.users	email	email	NULL
+
+query I
+SELECT count(*) FROM datahub.main.columns;
+----
+20
+
+# ---------------------------------------------------------------- containers, BI, pipelines
+
+query TTTT
+SELECT name, subtype, qualified_name, container_path FROM datahub.main.containers ORDER BY qualified_name;
+----
+ANALYTICS	Database	analytics	[ANALYTICS]
+MARTS	Schema	analytics.marts	[ANALYTICS, MARTS]
+RAW	Schema	analytics.raw	[ANALYTICS, RAW]
+STAGING	Schema	analytics.staging	[ANALYTICS, STAGING]
+
+query TTIT
+SELECT name, platform, view_count, last_refreshed_at FROM datahub.main.dashboards ORDER BY name;
+----
+Sales Overview	looker	321	2026-03-09 07:00:00+00
+Scratch	looker	0	NULL
+
+query TTT
+SELECT name, chart_type, external_url FROM datahub.main.charts;
+----
+Revenue by Day	LINE	https://looker.example.com/looks/34
+
+query TTTT
+SELECT f.name, j.name, j.input_dataset_ids, j.output_dataset_ids
+FROM datahub.main.data_flows f JOIN datahub.main.data_jobs j ON j.flow_id = f.id;
+----
+elt_daily	load_customers	['urn:li:dataset:(urn:li:dataPlatform:postgres,prod-pg.app.public.users,PROD)']	['urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.customers,PROD)']
+
+# ---------------------------------------------------------------- governance
+
+query TTTTT
+SELECT entity_type, entity_name, owner_type, owner_name, ownership_type FROM datahub.main.owners
+WHERE entity_type = 'dataset' ORDER BY entity_name, owner_name;
+----
+dataset	customers	user	jdoe	Technical Owner
+dataset	fct_orders	group	analytics	Technical Owner
+dataset	fct_orders	user	asmith	Business Owner
+dataset	orders	group	data-eng	Technical Owner
+dataset	users	user	former	Technical Owner
+
+# owner_id pushes down as DataHub's owners facet.
+query TT
+SELECT entity_type, entity_name FROM datahub.main.owners WHERE owner_id = 'urn:li:corpuser:asmith' ORDER BY ALL;
+----
+chart	Revenue by Day
+data_product	Orders Analytics
+dataset	fct_orders
+glossary_term	Gross Revenue
+
+query TTT
+SELECT name, color, description FROM datahub.main.tags ORDER BY name;
+----
+finance	NULL	NULL
+pii	#D0021B	Personally identifiable information.
+tier1	#4A90E2	Business-critical asset.
+
+query TTTT
+SELECT name, hierarchical_name, parent_path, domain FROM datahub.main.glossary_terms ORDER BY name;
+----
+Customer ID	Finance.CustomerID	[Finance]	NULL
+Email Address	Classification.EmailAddress	[Classification]	NULL
+Gross Revenue	Finance.Revenue.GrossRevenue	[Finance, Revenue]	Sales
+
+query TT
+SELECT name, parent_path FROM datahub.main.glossary_nodes ORDER BY name;
+----
+Classification	[]
+Finance	[]
+Revenue	[Finance]
+
+query TTI
+SELECT name, parent_domain_id, asset_count FROM datahub.main.domains ORDER BY name;
+----
+Marketing	NULL	1
+Sales	NULL	7
+Sales Ops	urn:li:domain:sales	0
+
+query TTI
+SELECT name, domain, asset_count FROM datahub.main.data_products;
+----
+Orders Analytics	Sales	3
+
+query TTT
+SELECT username, display_name, active FROM datahub.main.users ORDER BY username;
+----
+asmith	Alex Smith	true
+former	Former (left 2025)	false
+jdoe	Jane Doe	true
+
+query TTT
+SELECT name, display_name, slack FROM datahub.main.groups ORDER BY name;
+----
+analytics	Analytics	#analytics
+data-eng	Data Engineering	#data-eng
+
+# ---------------------------------------------------------------- lineage
+
+query TTTT
+SELECT upstream_qualified_name, upstream_column, downstream_column, transformation FROM datahub.main.lineage_edges
+WHERE level = 'column' AND downstream_id = 'urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)'
+ORDER BY downstream_column;
+----
+analytics.staging.stg_orders	amount	gross_revenue	SQL
+analytics.staging.stg_orders	order_id	order_id	IDENTITY
+
+query TTTT
+SELECT upstream_type, upstream_name, downstream_type, relationship FROM datahub.main.lineage_edges
+WHERE level = 'dataset' ORDER BY downstream_type, upstream_name;
+----
+dataset	fct_orders	chart	Consumes
+chart	Revenue by Day	dashboard	Contains
+dataset	users	data_job	Consumes
+dataset	customers	dataset	DownstreamOf
+data_job	load_customers	dataset	Produces
+dataset	orders	dataset	DownstreamOf
+dataset	orders.events	dataset	DownstreamOf
+dataset	stg_orders	dataset	DownstreamOf
+
+query I
+SELECT count(*) FROM datahub.main.lineage_edges WHERE level = 'column';
+----
+5
+
+query TIT
+SELECT qualified_name, degree, paths[1][1] FROM datahub.main.lineage('urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)')
+ORDER BY degree;
+----
+analytics.staging.stg_orders	1	urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)
+analytics.raw.orders	2	urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)
+orders.events	3	urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)
+
+query TTI
+SELECT entity_type, name, degree FROM datahub.main.lineage('urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.orders,PROD)', direction := 'downstream', max_hops := 5)
+ORDER BY degree;
+----
+dataset	stg_orders	1
+dataset	fct_orders	2
+chart	Revenue by Day	3
+dashboard	Sales Overview	4
+
+query TI
+SELECT name, degree FROM datahub.main.lineage('urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.orders,PROD)', direction := 'downstream', max_hops := 5)
+WHERE entity_type IN ('chart', 'dashboard') ORDER BY degree;
+----
+Revenue by Day	3
+Sales Overview	4
+
+query TI
+SELECT name, degree FROM datahub.main.lineage('urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.orders,PROD)', direction := 'downstream', max_hops := 2)
+ORDER BY degree;
+----
+stg_orders	1
+fct_orders	2
+
+# The URN scalar can build the start id.
+query I
+SELECT count(*) FROM datahub.main.lineage(datahub.main.dataset_urn('snowflake', 'analytics.raw.orders'), direction := 'downstream', max_hops := 5);
+----
+4
+
+statement error
+SELECT * FROM datahub.main.lineage('urn:li:dataset:(urn:li:dataPlatform:snowflake,nope,PROD)');
+----
+<REGEX>:.*unknown urn.*
+
+statement error
+SELECT * FROM datahub.main.lineage('not-a-urn');
+----
+<REGEX>:.*
+
+# ---------------------------------------------------------------- quality and usage
+
+query TTTTT
+SELECT qualified_name, assertion_type, source_type, last_status, last_run_at FROM datahub.main.assertions ORDER BY id;
+----
+analytics.marts.fct_orders	DATASET	EXTERNAL	passed	2026-03-09 02:30:00+00
+analytics.raw.customers	FRESHNESS	NATIVE	passed	2026-03-09 06:00:00+00
+analytics.marts.fct_orders	VOLUME	NATIVE	failed	2026-03-09 03:00:00+00
+
+query TTTT
+SELECT assertion_platform, column_names, operator, native_type FROM datahub.main.assertions WHERE source_type = 'EXTERNAL';
+----
+dbt	[order_id]	NOT_NULL	not_null
+
+# run_at pushes down as the run-event time window.
+query TTTR
+SELECT run_id, status, run_at, actual_value FROM datahub.main.assertion_results
+WHERE run_at >= TIMESTAMPTZ '2026-03-05 00:00:00+00' AND run_at < TIMESTAMPTZ '2026-03-09 05:00:00+00' ORDER BY run_at;
+----
+vol-5	passed	2026-03-05 03:00:00+00	1100.0
+dbt-77	passed	2026-03-09 02:30:00+00	NULL
+vol-9	failed	2026-03-09 03:00:00+00	900.0
+
+query IT
+SELECT count(*), max(native_results['expected_min']) FROM datahub.main.assertion_results WHERE assertion_id = 'urn:li:assertion:volume_fct_orders';
+----
+3	1000
+
+query TII
+SELECT qualified_name, max_by(row_count, profiled_at), len(max_by(column_profiles, profiled_at)) FROM datahub.main.dataset_profiles GROUP BY ALL ORDER BY ALL;
+----
+analytics.marts.fct_orders	1200	1
+analytics.raw.orders	5000	0
+
+query TI
+SELECT column_profiles[1].column_name, row_count FROM datahub.main.dataset_profiles
+WHERE profiled_at BETWEEN TIMESTAMPTZ '2026-03-04 00:00:00+00' AND TIMESTAMPTZ '2026-03-06 00:00:00+00';
+----
+gross_revenue	1100
+
+query TTTI
+SELECT qualified_name, operation_type, max(operation_at), sum(affected_rows) FROM datahub.main.operations GROUP BY ALL ORDER BY ALL;
+----
+analytics.marts.fct_orders	INSERT	2026-03-09 02:00:00+00	200
+analytics.raw.orders	INSERT	2026-03-09 23:00:00+00	250
+
+query TIITT
+SELECT qualified_name, query_count, unique_user_count, top_users[1].username, top_columns[1].column_name
+FROM datahub.main.usage ORDER BY query_count DESC;
+----
+analytics.marts.fct_orders	120	2	jdoe	gross_revenue
+analytics.raw.orders	10	1	jdoe	order_id
+
+query TTI
+SELECT qualified_name, time_range, query_count FROM datahub.main.usage WHERE time_range = 'WEEK' AND query_count IS NOT NULL;
+----
+analytics.marts.fct_orders	WEEK	30
+
+statement error
+SELECT * FROM datahub.main.usage WHERE time_range IN ('WEEK', 'MONTH');
+----
+<REGEX>:.*time_range must be filtered to one of.*
+
+query TTTTT
+SELECT title, incident_type, state, priority, source_type FROM datahub.main.incidents WHERE state = 'ACTIVE';
+----
+fct_orders shrank	VOLUME	ACTIVE	HIGH	ASSERTION_FAILURE
+
+query I
+SELECT count(*) FROM datahub.main.incidents;
+----
+2
+
+# ---------------------------------------------------------------- search
+
+query TTT
+SELECT entity_type, name, matched_fields FROM datahub.main.search('orders') WHERE entity_type IN ('dataset', 'dashboard') ORDER BY name;
+----
+dataset	fct_orders	[name]
+dataset	orders	[name, description]
+dataset	orders.events	[name]
+dataset	stg_orders	[name, description]
+
+query TT
+SELECT entity_type, name FROM datahub.main.search('*', tag := 'pii') ORDER BY ALL;
+----
+dataset	customers
+
+query TT
+SELECT entity_type, name FROM datahub.main.search('*', owner := 'asmith') WHERE entity_type <> 'glossary_term' ORDER BY ALL;
+----
+chart	Revenue by Day
+data_product	Orders Analytics
+dataset	fct_orders
+
+query TT
+SELECT entity_type, name FROM datahub.main.search('*', glossary_term := 'urn:li:glossaryTerm:gross_revenue') ORDER BY ALL;
+----
+dataset	fct_orders
+
+query TT
+SELECT entity_type, name FROM datahub.main.search('revenue') WHERE platform = 'looker' ORDER BY ALL;
+----
+chart	Revenue by Day
+dashboard	Sales Overview
+
+# ---------------------------------------------------------------- authentication
+
+statement ok
+CREATE OR REPLACE SECRET dh (TYPE datahub, GMS_URL '{DATAHUB_MOCK_AUTH}');
+
+statement error
+SELECT count(*) FROM datahub.main.tags;
+----
+<REGEX>:.*HTTP 401.*TOKEN.*
+
+statement ok
+CREATE OR REPLACE SECRET dh (TYPE datahub, GMS_URL '{DATAHUB_MOCK_AUTH}', TOKEN 'test-token');
+
+query I
+SELECT count(*) FROM datahub.main.tags;
+----
+3
+
+# The frontend's /api/v2/graphql route works when only FRONTEND_URL is set.
+statement ok
+CREATE OR REPLACE SECRET dh (TYPE datahub, FRONTEND_URL '{DATAHUB_MOCK_AUTH}', TOKEN 'test-token');
+
+query T
+SELECT url = '{DATAHUB_MOCK_AUTH}/group/urn%3Ali%3AcorpGroup%3Aanalytics' FROM datahub.main.groups WHERE id = 'urn:li:corpGroup:analytics';
+----
+true
+
+statement ok
+DROP SECRET dh;

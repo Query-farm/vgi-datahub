@@ -1,0 +1,55 @@
+# name: test/sql/scalars.test
+# description: The offline URN scalars (no DataHub, no secret)
+# group: [datahub]
+
+require vgi
+
+require-env DATAHUB_WORKER
+
+statement ok
+ATTACH 'datahub' (TYPE vgi, LOCATION '{DATAHUB_WORKER}');
+
+query TT
+SELECT datahub.main.dataset_qualified_name('urn:li:dataset:(urn:li:dataPlatform:snowflake,ANALYTICS.Marts.FCT_ORDERS,PROD)'),
+       datahub.main.dataset_qualified_name('urn:li:dataset:(urn:li:dataPlatform:kafka,Orders.Events,PROD)');
+----
+analytics.marts.fct_orders	orders.events
+
+# NULL and non-dataset URNs give NULL; works over a column.
+query T
+SELECT datahub.main.dataset_qualified_name(u) FROM (VALUES
+  ('urn:li:dataset:(urn:li:dataPlatform:mysql,Shop.Orders,DEV)'), (NULL), ('urn:li:chart:(looker,1)')) t(u)
+ORDER BY ALL NULLS LAST;
+----
+shop.orders
+NULL
+NULL
+
+query TTTTTTT
+SELECT p.platform, p.name, p.environment, p.database, p.schema, p.table_name, p.qualified_name
+FROM (SELECT datahub.main.parse_dataset_urn('urn:li:dataset:(urn:li:dataPlatform:bigquery,proj.ds.events,DEV)') AS p);
+----
+bigquery	proj.ds.events	DEV	proj	ds	events	proj.ds.events
+
+query T
+SELECT datahub.main.parse_dataset_urn('not a urn') IS NULL;
+----
+true
+
+query TT
+SELECT datahub.main.dataset_urn('snowflake', 'analytics.marts.fct_orders'),
+       datahub.main.dataset_urn('urn:li:dataPlatform:bigquery', 'proj.ds.events', 'dev');
+----
+urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)	urn:li:dataset:(urn:li:dataPlatform:bigquery,proj.ds.events,DEV)
+
+query T
+SELECT datahub.main.dataset_urn(p, n) FROM (VALUES ('kafka', 'topic'), (NULL, 'x')) t(p, n) ORDER BY ALL NULLS LAST;
+----
+urn:li:dataset:(urn:li:dataPlatform:kafka,topic,PROD)
+NULL
+
+# Round trip: building a URN and reading its qualified name.
+query T
+SELECT datahub.main.dataset_qualified_name(datahub.main.dataset_urn('postgres', 'App.Public.Users'));
+----
+app.public.users

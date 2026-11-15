@@ -1,0 +1,31 @@
+# vgi-lint settings for this worker: https://github.com/Query-farm/vgi-lint-check
+# `make lint-explain`, `vgi-lint lint` in this directory, and CI's metadata job all
+# read this file. Look up a rule with `vgi-lint explain VGI123`; print the metadata tag
+# contract with `vgi-lint spec`.
+
+# The worker to attach, relative to this directory. Build it first with `make build`.
+location = ".venv/bin/vgi-datahub-worker"
+
+fail_on = "info"
+
+# Waive a finding only with a kind and a reason, so the waiver can be audited:
+#   domain-exemption  permanent and legitimate for this worker
+#   deferred          a real defect you will fix; add expires = "YYYY-MM-DD"
+#   timing            slow or flaky because of the environment, not the metadata
+#   tooling-bug       the linter is wrong; report it upstream
+ignore = [
+  { code = "VGI808", kind = "domain-exemption", reason = "dataset_id / domain_id / container_id / assertion_id are real, documented joins, but cannot be attested ENFORCED (vgi-python accepts only ENFORCED constraint records): every table is read live from DataHub per query, so entities appear and disappear between scans, a dataset_id pushdown fetches soft-deleted datasets the datasets search hides, and domain/container references can name entities the token cannot see. owners.owner_id names users and groups, not owners." },
+  { code = "VGI809", kind = "domain-exemption", reason = "glossary_terms.parent_node_id and glossary_nodes.parent_node_id both reference glossary_nodes.id; not attestable ENFORCED for the same live-read reason as VGI808" },
+]
+
+[per_object."datahub.main.lineage_edges"]
+ignore = [{ code = "VGI807", kind = "domain-exemption", reason = "an edge has no id: the same column pair can be recorded by both a dataset's and a task's fine-grained lineage, so no column set is guaranteed unique" }]
+[per_object."datahub.main.assertion_results"]
+ignore = [{ code = "VGI807", kind = "domain-exemption", reason = "DataHub run events have no id; assertion_id + run_at is unique in practice but DataHub does not guarantee it (a re-sent event keeps its timestamp)" }]
+[per_object."datahub.main.operations"]
+ignore = [{ code = "VGI807", kind = "domain-exemption", reason = "DataHub operation events carry no id and several operations can share a dataset and timestamp" }]
+[per_object."datahub.main.owners"]
+ignore = [{ code = "VGI807", kind = "domain-exemption", reason = "the ownership type is optional on legacy owners, so (entity_id, owner_id, ownership type) can contain NULL and cannot be a primary key" }]
+[per_object."datahub.main.usage"]
+ignore = [{ code = "VGI144", kind = "domain-exemption", reason = "'usage' is a mass noun and the table name shared with the sibling data-catalog workers (vgi-openmetadata, vgi-unity-catalog)" }]
+

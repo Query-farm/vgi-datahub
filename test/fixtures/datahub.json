@@ -1,0 +1,2053 @@
+{
+ "datahub_version": "v1.8.0",
+ "entities": [
+  {
+   "name": "snowflake",
+   "type": "DATA_PLATFORM",
+   "urn": "urn:li:dataPlatform:snowflake"
+  },
+  {
+   "name": "postgres",
+   "type": "DATA_PLATFORM",
+   "urn": "urn:li:dataPlatform:postgres"
+  },
+  {
+   "name": "kafka",
+   "type": "DATA_PLATFORM",
+   "urn": "urn:li:dataPlatform:kafka"
+  },
+  {
+   "name": "looker",
+   "type": "DATA_PLATFORM",
+   "urn": "urn:li:dataPlatform:looker"
+  },
+  {
+   "name": "airflow",
+   "type": "DATA_PLATFORM",
+   "urn": "urn:li:dataPlatform:airflow"
+  },
+  {
+   "name": "datahub",
+   "type": "DATA_PLATFORM",
+   "urn": "urn:li:dataPlatform:datahub"
+  },
+  {
+   "name": "dbt",
+   "type": "DATA_PLATFORM",
+   "urn": "urn:li:dataPlatform:dbt"
+  },
+  {
+   "editableProperties": null,
+   "properties": {
+    "active": true,
+    "departmentName": "Data",
+    "displayName": "Jane Doe",
+    "email": "jane@example.com",
+    "title": "Data Engineer"
+   },
+   "status": "ACTIVE",
+   "type": "CORP_USER",
+   "urn": "urn:li:corpuser:jdoe",
+   "username": "jdoe"
+  },
+  {
+   "editableProperties": null,
+   "properties": {
+    "active": true,
+    "departmentName": "Finance",
+    "displayName": "Alex Smith",
+    "email": "alex@example.com",
+    "title": "Analyst"
+   },
+   "status": "ACTIVE",
+   "type": "CORP_USER",
+   "urn": "urn:li:corpuser:asmith",
+   "username": "asmith"
+  },
+  {
+   "editableProperties": {
+    "displayName": "Former (left 2025)",
+    "email": null,
+    "title": null
+   },
+   "properties": {
+    "active": true,
+    "departmentName": null,
+    "displayName": "Former Employee",
+    "email": null,
+    "title": null
+   },
+   "status": "SUSPENDED",
+   "type": "CORP_USER",
+   "urn": "urn:li:corpuser:former",
+   "username": "former"
+  },
+  {
+   "name": "data-eng",
+   "properties": {
+    "description": "Builds pipelines.",
+    "displayName": "Data Engineering",
+    "email": "data-eng@example.com",
+    "slack": "#data-eng"
+   },
+   "type": "CORP_GROUP",
+   "urn": "urn:li:corpGroup:data-eng"
+  },
+  {
+   "name": "analytics",
+   "properties": {
+    "description": "Owns marts and dashboards.",
+    "displayName": "Analytics",
+    "email": "analytics@example.com",
+    "slack": "#analytics"
+   },
+   "type": "CORP_GROUP",
+   "urn": "urn:li:corpGroup:analytics"
+  },
+  {
+   "info": {
+    "description": null,
+    "name": "Technical Owner"
+   },
+   "type": "CUSTOM_OWNERSHIP_TYPE",
+   "urn": "urn:li:ownershipType:__system__technical_owner"
+  },
+  {
+   "info": {
+    "description": null,
+    "name": "Business Owner"
+   },
+   "type": "CUSTOM_OWNERSHIP_TYPE",
+   "urn": "urn:li:ownershipType:__system__business_owner"
+  },
+  {
+   "description": "Personally identifiable information.",
+   "name": "pii",
+   "properties": {
+    "colorHex": "#D0021B",
+    "description": "Personally identifiable information.",
+    "name": "pii"
+   },
+   "type": "TAG",
+   "urn": "urn:li:tag:pii"
+  },
+  {
+   "description": "Business-critical asset.",
+   "name": "tier1",
+   "properties": {
+    "colorHex": "#4A90E2",
+    "description": "Business-critical asset.",
+    "name": "tier1"
+   },
+   "type": "TAG",
+   "urn": "urn:li:tag:tier1"
+  },
+  {
+   "description": null,
+   "name": "finance",
+   "properties": {
+    "colorHex": null,
+    "description": null,
+    "name": "finance"
+   },
+   "type": "TAG",
+   "urn": "urn:li:tag:finance"
+  },
+  {
+   "parentNodes": {
+    "count": 0,
+    "nodes": []
+   },
+   "properties": {
+    "description": "Financial concepts.",
+    "name": "Finance"
+   },
+   "type": "GLOSSARY_NODE",
+   "urn": "urn:li:glossaryNode:finance"
+  },
+  {
+   "parentNodes": {
+    "count": 1,
+    "nodes": [
+     {
+      "$ref": "urn:li:glossaryNode:finance"
+     }
+    ]
+   },
+   "properties": {
+    "description": null,
+    "name": "Revenue"
+   },
+   "type": "GLOSSARY_NODE",
+   "urn": "urn:li:glossaryNode:revenue"
+  },
+  {
+   "parentNodes": {
+    "count": 0,
+    "nodes": []
+   },
+   "properties": {
+    "description": "Data sensitivity classes.",
+    "name": "Classification"
+   },
+   "type": "GLOSSARY_NODE",
+   "urn": "urn:li:glossaryNode:classification"
+  },
+  {
+   "domain": {
+    "domain": {
+     "$ref": "urn:li:domain:sales"
+    }
+   },
+   "hierarchicalName": "Finance.Revenue.GrossRevenue",
+   "name": "gross_revenue",
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpuser:asmith"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__business_owner"
+      },
+      "type": "BUSINESS_OWNER"
+     }
+    ]
+   },
+   "parentNodes": {
+    "count": 2,
+    "nodes": [
+     {
+      "$ref": "urn:li:glossaryNode:revenue"
+     },
+     {
+      "$ref": "urn:li:glossaryNode:finance"
+     }
+    ]
+   },
+   "properties": {
+    "definition": "Order amount before refunds and discounts.",
+    "name": "Gross Revenue",
+    "sourceRef": null,
+    "sourceUrl": null,
+    "termSource": "INTERNAL"
+   },
+   "type": "GLOSSARY_TERM",
+   "urn": "urn:li:glossaryTerm:gross_revenue"
+  },
+  {
+   "domain": null,
+   "hierarchicalName": "Finance.CustomerID",
+   "name": "customer_id",
+   "ownership": null,
+   "parentNodes": {
+    "count": 1,
+    "nodes": [
+     {
+      "$ref": "urn:li:glossaryNode:finance"
+     }
+    ]
+   },
+   "properties": {
+    "definition": "Stable identifier of a customer.",
+    "name": "Customer ID",
+    "sourceRef": null,
+    "sourceUrl": null,
+    "termSource": "INTERNAL"
+   },
+   "type": "GLOSSARY_TERM",
+   "urn": "urn:li:glossaryTerm:customer_id"
+  },
+  {
+   "domain": null,
+   "hierarchicalName": "Classification.EmailAddress",
+   "name": "email_address",
+   "ownership": null,
+   "parentNodes": {
+    "count": 1,
+    "nodes": [
+     {
+      "$ref": "urn:li:glossaryNode:classification"
+     }
+    ]
+   },
+   "properties": {
+    "definition": "A personal email address.",
+    "name": "Email Address",
+    "sourceRef": null,
+    "sourceUrl": null,
+    "termSource": "INTERNAL"
+   },
+   "type": "GLOSSARY_TERM",
+   "urn": "urn:li:glossaryTerm:email_address"
+  },
+  {
+   "id": "sales",
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpGroup:analytics"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__business_owner"
+      },
+      "type": "BUSINESS_OWNER"
+     }
+    ]
+   },
+   "parentDomains": {
+    "count": 0,
+    "domains": []
+   },
+   "properties": {
+    "description": "Orders, customers and revenue.",
+    "name": "Sales"
+   },
+   "type": "DOMAIN",
+   "urn": "urn:li:domain:sales"
+  },
+  {
+   "id": "sales_ops",
+   "ownership": null,
+   "parentDomains": {
+    "count": 1,
+    "domains": [
+     {
+      "$ref": "urn:li:domain:sales"
+     }
+    ]
+   },
+   "properties": {
+    "description": null,
+    "name": "Sales Ops"
+   },
+   "type": "DOMAIN",
+   "urn": "urn:li:domain:sales_ops"
+  },
+  {
+   "id": "marketing",
+   "ownership": null,
+   "parentDomains": {
+    "count": 0,
+    "domains": []
+   },
+   "properties": {
+    "description": "Campaigns.",
+    "name": "Marketing"
+   },
+   "type": "DOMAIN",
+   "urn": "urn:li:domain:marketing"
+  },
+  {
+   "domain": {
+    "domain": {
+     "$ref": "urn:li:domain:sales"
+    }
+   },
+   "glossaryTerms": null,
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpuser:asmith"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__business_owner"
+      },
+      "type": "BUSINESS_OWNER"
+     }
+    ]
+   },
+   "properties": {
+    "description": "Curated order facts and the dashboards on them.",
+    "externalUrl": null,
+    "name": "Orders Analytics",
+    "numAssets": 3
+   },
+   "tags": {
+    "tags": [
+     {
+      "tag": {
+       "$ref": "urn:li:tag:tier1"
+      }
+     }
+    ]
+   },
+   "type": "DATA_PRODUCT",
+   "urn": "urn:li:dataProduct:orders_analytics"
+  },
+  {
+   "container": null,
+   "domain": null,
+   "editableProperties": null,
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpGroup:data-eng"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__technical_owner"
+      },
+      "type": "TECHNICAL_OWNER"
+     }
+    ]
+   },
+   "parentContainers": {
+    "containers": [],
+    "count": 0
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:snowflake"
+   },
+   "properties": {
+    "description": "Analytics database.",
+    "externalUrl": null,
+    "name": "ANALYTICS",
+    "qualifiedName": "analytics"
+   },
+   "subTypes": {
+    "typeNames": [
+     "Database"
+    ]
+   },
+   "tags": null,
+   "type": "CONTAINER",
+   "urn": "urn:li:container:sf_analytics"
+  },
+  {
+   "container": {
+    "$ref": "urn:li:container:sf_analytics"
+   },
+   "domain": null,
+   "editableProperties": null,
+   "ownership": null,
+   "parentContainers": {
+    "containers": [
+     {
+      "$ref": "urn:li:container:sf_analytics"
+     }
+    ],
+    "count": 1
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:snowflake"
+   },
+   "properties": {
+    "description": null,
+    "externalUrl": null,
+    "name": "RAW",
+    "qualifiedName": null
+   },
+   "subTypes": {
+    "typeNames": [
+     "Schema"
+    ]
+   },
+   "tags": null,
+   "type": "CONTAINER",
+   "urn": "urn:li:container:sf_raw"
+  },
+  {
+   "container": {
+    "$ref": "urn:li:container:sf_analytics"
+   },
+   "domain": null,
+   "editableProperties": null,
+   "ownership": null,
+   "parentContainers": {
+    "containers": [
+     {
+      "$ref": "urn:li:container:sf_analytics"
+     }
+    ],
+    "count": 1
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:snowflake"
+   },
+   "properties": {
+    "description": null,
+    "externalUrl": null,
+    "name": "STAGING",
+    "qualifiedName": null
+   },
+   "subTypes": {
+    "typeNames": [
+     "Schema"
+    ]
+   },
+   "tags": null,
+   "type": "CONTAINER",
+   "urn": "urn:li:container:sf_staging"
+  },
+  {
+   "container": {
+    "$ref": "urn:li:container:sf_analytics"
+   },
+   "domain": {
+    "domain": {
+     "$ref": "urn:li:domain:sales"
+    }
+   },
+   "editableProperties": {
+    "description": "marts layer"
+   },
+   "ownership": null,
+   "parentContainers": {
+    "containers": [
+     {
+      "$ref": "urn:li:container:sf_analytics"
+     }
+    ],
+    "count": 1
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:snowflake"
+   },
+   "properties": {
+    "description": null,
+    "externalUrl": null,
+    "name": "MARTS",
+    "qualifiedName": null
+   },
+   "subTypes": {
+    "typeNames": [
+     "Schema"
+    ]
+   },
+   "tags": null,
+   "type": "CONTAINER",
+   "urn": "urn:li:container:sf_marts"
+  },
+  {
+   "_operations": [
+    {
+     "actor": "urn:li:corpuser:jdoe",
+     "customOperationType": null,
+     "lastUpdatedTimestamp": 1773097200000,
+     "numAffectedRows": 250,
+     "operationType": "INSERT",
+     "sourceType": "DATA_PLATFORM",
+     "timestampMillis": 1773097500000
+    }
+   ],
+   "_profiles": [
+    {
+     "columnCount": 4,
+     "fieldProfiles": [],
+     "rowCount": 5000,
+     "sizeInBytes": 204800,
+     "timestampMillis": 1773014400000
+    }
+   ],
+   "_usage": {
+    "MONTH": {
+     "fields": [
+      {
+       "count": 10,
+       "fieldName": "order_id"
+      }
+     ],
+     "totalSqlQueries": 10,
+     "uniqueUserCount": 1,
+     "users": [
+      {
+       "count": 10,
+       "user": {
+        "$ref": "urn:li:corpuser:jdoe"
+       },
+       "userEmail": "jane@example.com"
+      }
+     ]
+    }
+   },
+   "container": {
+    "$ref": "urn:li:container:sf_raw"
+   },
+   "dataPlatformInstance": null,
+   "deprecation": null,
+   "domain": null,
+   "editableProperties": null,
+   "editableSchemaMetadata": null,
+   "fineGrainedLineages": [],
+   "glossaryTerms": null,
+   "lastIngested": 1773122400000,
+   "name": "analytics.raw.orders",
+   "origin": "PROD",
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpGroup:data-eng"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__technical_owner"
+      },
+      "type": "TECHNICAL_OWNER"
+     }
+    ]
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:snowflake"
+   },
+   "properties": {
+    "created": 1748736000000,
+    "customProperties": [
+     {
+      "associatedUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.orders,PROD)",
+      "key": "retention_days",
+      "value": "365"
+     }
+    ],
+    "description": "Orders as loaded from the shop database.",
+    "externalUrl": "https://app.snowflake.com/x/#/data/databases/ANALYTICS/schemas/RAW/table/ORDERS",
+    "lastModified": {
+     "time": 1773097200000
+    },
+    "name": "orders",
+    "origin": "PROD",
+    "qualifiedName": "ANALYTICS.RAW.ORDERS"
+   },
+   "schemaMetadata": {
+    "fields": [
+     {
+      "description": null,
+      "fieldPath": "order_id",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(38,0)",
+      "nullable": false,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "customer_id",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(38,0)",
+      "nullable": true,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "amount",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(12,2)",
+      "nullable": true,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "created_at",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "TIMESTAMP_NTZ",
+      "nullable": true,
+      "recursive": false,
+      "type": "TIME"
+     }
+    ],
+    "hash": "",
+    "name": "analytics.raw.orders",
+    "platformUrn": "urn:li:dataPlatform:snowflake",
+    "primaryKeys": [
+     "order_id"
+    ],
+    "version": 0
+   },
+   "statsSummary": null,
+   "subTypes": {
+    "typeNames": [
+     "Table"
+    ]
+   },
+   "tags": null,
+   "type": "DATASET",
+   "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.orders,PROD)"
+  },
+  {
+   "_assertions": [
+    {
+     "_runEvents": [
+      {
+       "asserteeUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.customers,PROD)",
+       "assertionUrn": "urn:li:assertion:freshness_customers",
+       "result": {
+        "actualAggValue": null,
+        "externalUrl": null,
+        "missingCount": null,
+        "nativeResults": [],
+        "rowCount": null,
+        "type": "SUCCESS",
+        "unexpectedCount": null
+       },
+       "runId": "fr-1",
+       "status": "COMPLETE",
+       "timestampMillis": 1773036000000
+      }
+     ],
+     "info": {
+      "datasetAssertion": null,
+      "description": "Loaded within 24 hours",
+      "externalUrl": null,
+      "fieldAssertion": null,
+      "source": {
+       "type": "NATIVE"
+      },
+      "type": "FRESHNESS"
+     },
+     "platform": {
+      "$ref": "urn:li:dataPlatform:datahub"
+     },
+     "type": "ASSERTION",
+     "urn": "urn:li:assertion:freshness_customers"
+    }
+   ],
+   "container": {
+    "$ref": "urn:li:container:sf_raw"
+   },
+   "dataPlatformInstance": null,
+   "deprecation": null,
+   "domain": null,
+   "editableProperties": null,
+   "editableSchemaMetadata": {
+    "editableSchemaFieldInfo": [
+     {
+      "description": "City of the billing address.",
+      "fieldPath": "[version=2.0].[type=struct].[type=struct].address.[type=string].city",
+      "globalTags": {
+       "tags": [
+        {
+         "tag": {
+          "$ref": "urn:li:tag:pii"
+         }
+        }
+       ]
+      },
+      "glossaryTerms": null
+     }
+    ]
+   },
+   "fineGrainedLineages": [],
+   "glossaryTerms": null,
+   "lastIngested": 1773122400000,
+   "name": "analytics.raw.customers",
+   "origin": "PROD",
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpuser:jdoe"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__technical_owner"
+      },
+      "type": "TECHNICAL_OWNER"
+     }
+    ]
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:snowflake"
+   },
+   "properties": {
+    "created": null,
+    "customProperties": [],
+    "description": "Customers copied from the app database.",
+    "externalUrl": null,
+    "lastModified": {
+     "actor": null,
+     "time": 0
+    },
+    "name": "customers",
+    "origin": "PROD",
+    "qualifiedName": null
+   },
+   "schemaMetadata": {
+    "fields": [
+     {
+      "description": null,
+      "fieldPath": "customer_id",
+      "globalTags": null,
+      "glossaryTerms": {
+       "terms": [
+        {
+         "term": {
+          "$ref": "urn:li:glossaryTerm:customer_id"
+         }
+        }
+       ]
+      },
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(38,0)",
+      "nullable": false,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": "Login email.",
+      "fieldPath": "email",
+      "globalTags": {
+       "tags": [
+        {
+         "tag": {
+          "$ref": "urn:li:tag:pii"
+         }
+        }
+       ]
+      },
+      "glossaryTerms": {
+       "terms": [
+        {
+         "term": {
+          "$ref": "urn:li:glossaryTerm:email_address"
+         }
+        }
+       ]
+      },
+      "isPartOfKey": false,
+      "nativeDataType": "VARCHAR(256)",
+      "nullable": true,
+      "recursive": false,
+      "type": "STRING"
+     },
+     {
+      "description": null,
+      "fieldPath": "[version=2.0].[type=struct].[type=struct].address",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "OBJECT",
+      "nullable": true,
+      "recursive": false,
+      "type": "STRUCT"
+     },
+     {
+      "description": null,
+      "fieldPath": "[version=2.0].[type=struct].[type=struct].address.[type=string].city",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "VARCHAR",
+      "nullable": true,
+      "recursive": false,
+      "type": "STRING"
+     }
+    ],
+    "hash": "",
+    "name": "analytics.raw.customers",
+    "platformUrn": "urn:li:dataPlatform:snowflake",
+    "primaryKeys": null,
+    "version": 0
+   },
+   "statsSummary": null,
+   "subTypes": {
+    "typeNames": [
+     "Table"
+    ]
+   },
+   "tags": {
+    "tags": [
+     {
+      "tag": {
+       "$ref": "urn:li:tag:pii"
+      }
+     }
+    ]
+   },
+   "type": "DATASET",
+   "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.customers,PROD)"
+  },
+  {
+   "container": {
+    "$ref": "urn:li:container:sf_staging"
+   },
+   "dataPlatformInstance": null,
+   "deprecation": null,
+   "domain": null,
+   "editableProperties": null,
+   "editableSchemaMetadata": null,
+   "fineGrainedLineages": [
+    {
+     "downstreams": [
+      {
+       "path": "order_id",
+       "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.staging.stg_orders,PROD)"
+      }
+     ],
+     "query": null,
+     "transformOperation": "IDENTITY",
+     "upstreams": [
+      {
+       "path": "order_id",
+       "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.orders,PROD)"
+      }
+     ]
+    },
+    {
+     "downstreams": [
+      {
+       "path": "amount",
+       "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.staging.stg_orders,PROD)"
+      }
+     ],
+     "query": null,
+     "transformOperation": "IDENTITY",
+     "upstreams": [
+      {
+       "path": "amount",
+       "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.orders,PROD)"
+      }
+     ]
+    }
+   ],
+   "glossaryTerms": null,
+   "lastIngested": 1773122400000,
+   "name": "analytics.staging.stg_orders",
+   "origin": "PROD",
+   "ownership": null,
+   "platform": {
+    "$ref": "urn:li:dataPlatform:snowflake"
+   },
+   "properties": {
+    "created": null,
+    "customProperties": [],
+    "description": "Cleaned orders.",
+    "externalUrl": null,
+    "lastModified": {
+     "actor": null,
+     "time": 0
+    },
+    "name": "stg_orders",
+    "origin": "PROD",
+    "qualifiedName": null
+   },
+   "schemaMetadata": {
+    "fields": [
+     {
+      "description": null,
+      "fieldPath": "order_id",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(38,0)",
+      "nullable": false,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "customer_id",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(38,0)",
+      "nullable": true,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "amount",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(12,2)",
+      "nullable": true,
+      "recursive": false,
+      "type": "NUMBER"
+     }
+    ],
+    "hash": "",
+    "name": "analytics.staging.stg_orders",
+    "platformUrn": "urn:li:dataPlatform:snowflake",
+    "primaryKeys": null,
+    "version": 0
+   },
+   "statsSummary": null,
+   "subTypes": {
+    "typeNames": [
+     "View"
+    ]
+   },
+   "tags": null,
+   "type": "DATASET",
+   "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.staging.stg_orders,PROD)"
+  },
+  {
+   "_assertions": [
+    {
+     "_runEvents": [
+      {
+       "asserteeUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)",
+       "assertionUrn": "urn:li:assertion:volume_fct_orders",
+       "result": {
+        "actualAggValue": 1000.0,
+        "externalUrl": null,
+        "missingCount": null,
+        "nativeResults": [
+         {
+          "key": "expected_min",
+          "value": "1000"
+         }
+        ],
+        "rowCount": 1000,
+        "type": "SUCCESS",
+        "unexpectedCount": null
+       },
+       "runId": "vol-1",
+       "status": "COMPLETE",
+       "timestampMillis": 1772334000000
+      },
+      {
+       "asserteeUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)",
+       "assertionUrn": "urn:li:assertion:volume_fct_orders",
+       "result": {
+        "actualAggValue": 1100.0,
+        "externalUrl": null,
+        "missingCount": null,
+        "nativeResults": [
+         {
+          "key": "expected_min",
+          "value": "1000"
+         }
+        ],
+        "rowCount": 1100,
+        "type": "SUCCESS",
+        "unexpectedCount": null
+       },
+       "runId": "vol-5",
+       "status": "COMPLETE",
+       "timestampMillis": 1772679600000
+      },
+      {
+       "asserteeUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)",
+       "assertionUrn": "urn:li:assertion:volume_fct_orders",
+       "result": {
+        "actualAggValue": 900.0,
+        "externalUrl": null,
+        "missingCount": null,
+        "nativeResults": [
+         {
+          "key": "expected_min",
+          "value": "1000"
+         }
+        ],
+        "rowCount": 900,
+        "type": "FAILURE",
+        "unexpectedCount": null
+       },
+       "runId": "vol-9",
+       "status": "COMPLETE",
+       "timestampMillis": 1773025200000
+      }
+     ],
+     "info": {
+      "datasetAssertion": null,
+      "description": "Row count grows every day",
+      "externalUrl": null,
+      "fieldAssertion": null,
+      "source": {
+       "type": "NATIVE"
+      },
+      "type": "VOLUME"
+     },
+     "platform": {
+      "$ref": "urn:li:dataPlatform:datahub"
+     },
+     "type": "ASSERTION",
+     "urn": "urn:li:assertion:volume_fct_orders"
+    },
+    {
+     "_runEvents": [
+      {
+       "asserteeUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)",
+       "assertionUrn": "urn:li:assertion:dbt_not_null_order_id",
+       "result": {
+        "actualAggValue": null,
+        "externalUrl": null,
+        "missingCount": 0,
+        "nativeResults": [],
+        "rowCount": 1200,
+        "type": "SUCCESS",
+        "unexpectedCount": 0
+       },
+       "runId": "dbt-77",
+       "status": "COMPLETE",
+       "timestampMillis": 1773023400000
+      }
+     ],
+     "info": {
+      "datasetAssertion": {
+       "datasetUrn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)",
+       "fields": [
+        {
+         "path": "order_id",
+         "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)"
+        }
+       ],
+       "nativeType": "not_null",
+       "operator": "NOT_NULL",
+       "scope": "DATASET_COLUMN"
+      },
+      "description": "not_null(order_id)",
+      "externalUrl": "https://dbt.example.com/tests/not_null_fct_orders_order_id",
+      "fieldAssertion": null,
+      "source": {
+       "type": "EXTERNAL"
+      },
+      "type": "DATASET"
+     },
+     "platform": {
+      "$ref": "urn:li:dataPlatform:dbt"
+     },
+     "type": "ASSERTION",
+     "urn": "urn:li:assertion:dbt_not_null_order_id"
+    }
+   ],
+   "_incidents": [
+    {
+     "created": {
+      "actor": "urn:li:corpuser:datahub",
+      "time": 1773025260000
+     },
+     "customType": null,
+     "description": "Row count dropped below 1000.",
+     "incidentType": "VOLUME",
+     "priority": "HIGH",
+     "source": {
+      "type": "ASSERTION_FAILURE"
+     },
+     "startedAt": 1773025200000,
+     "status": {
+      "lastUpdated": {
+       "time": 1773028800000
+      },
+      "message": null,
+      "stage": "INVESTIGATION",
+      "state": "ACTIVE"
+     },
+     "title": "fct_orders shrank",
+     "type": "INCIDENT",
+     "urn": "urn:li:incident:fct_orders_volume"
+    },
+    {
+     "created": {
+      "actor": "urn:li:corpuser:jdoe",
+      "time": 1770019200000
+     },
+     "customType": null,
+     "description": null,
+     "incidentType": "FRESHNESS",
+     "priority": "LOW",
+     "source": {
+      "type": "MANUAL"
+     },
+     "startedAt": null,
+     "status": {
+      "lastUpdated": {
+       "time": 1770026400000
+      },
+      "message": "Rerun",
+      "stage": "FIXED",
+      "state": "RESOLVED"
+     },
+     "title": "Late load",
+     "type": "INCIDENT",
+     "urn": "urn:li:incident:fct_orders_late"
+    }
+   ],
+   "_operations": [
+    {
+     "actor": "urn:li:corpuser:jdoe",
+     "customOperationType": null,
+     "lastUpdatedTimestamp": 1772676000000,
+     "numAffectedRows": 100,
+     "operationType": "INSERT",
+     "sourceType": "DATA_PROCESS",
+     "timestampMillis": 1772676300000
+    },
+    {
+     "actor": "urn:li:corpuser:jdoe",
+     "customOperationType": null,
+     "lastUpdatedTimestamp": 1773021600000,
+     "numAffectedRows": 100,
+     "operationType": "INSERT",
+     "sourceType": "DATA_PROCESS",
+     "timestampMillis": 1773021900000
+    }
+   ],
+   "_profiles": [
+    {
+     "columnCount": 4,
+     "fieldProfiles": [
+      {
+       "fieldPath": "gross_revenue",
+       "max": "999.00",
+       "mean": "42.5",
+       "median": "30.0",
+       "min": "1.00",
+       "nullCount": 0,
+       "nullProportion": 0.0,
+       "stdev": "12.1",
+       "uniqueCount": 500,
+       "uniqueProportion": 0.5
+      }
+     ],
+     "rowCount": 1000,
+     "sizeInBytes": 100000,
+     "timestampMillis": 1772323200000
+    },
+    {
+     "columnCount": 4,
+     "fieldProfiles": [
+      {
+       "fieldPath": "gross_revenue",
+       "max": "999.00",
+       "mean": "42.5",
+       "median": "30.0",
+       "min": "1.00",
+       "nullCount": 0,
+       "nullProportion": 0.0,
+       "stdev": "12.1",
+       "uniqueCount": 550,
+       "uniqueProportion": 0.5
+      }
+     ],
+     "rowCount": 1100,
+     "sizeInBytes": 110000,
+     "timestampMillis": 1772668800000
+    },
+    {
+     "columnCount": 4,
+     "fieldProfiles": [
+      {
+       "fieldPath": "gross_revenue",
+       "max": "999.00",
+       "mean": "42.5",
+       "median": "30.0",
+       "min": "1.00",
+       "nullCount": 0,
+       "nullProportion": 0.0,
+       "stdev": "12.1",
+       "uniqueCount": 600,
+       "uniqueProportion": 0.5
+      }
+     ],
+     "rowCount": 1200,
+     "sizeInBytes": 120000,
+     "timestampMillis": 1773014400000
+    }
+   ],
+   "_usage": {
+    "MONTH": {
+     "fields": [
+      {
+       "count": 30,
+       "fieldName": "order_id"
+      },
+      {
+       "count": 90,
+       "fieldName": "gross_revenue"
+      }
+     ],
+     "totalSqlQueries": 120,
+     "uniqueUserCount": 2,
+     "users": [
+      {
+       "count": 40,
+       "user": {
+        "$ref": "urn:li:corpuser:asmith"
+       },
+       "userEmail": "alex@example.com"
+      },
+      {
+       "count": 80,
+       "user": {
+        "$ref": "urn:li:corpuser:jdoe"
+       },
+       "userEmail": "jane@example.com"
+      }
+     ]
+    },
+    "WEEK": {
+     "fields": [],
+     "totalSqlQueries": 30,
+     "uniqueUserCount": 1,
+     "users": [
+      {
+       "count": 30,
+       "user": {
+        "$ref": "urn:li:corpuser:asmith"
+       },
+       "userEmail": "alex@example.com"
+      }
+     ]
+    }
+   },
+   "container": {
+    "$ref": "urn:li:container:sf_marts"
+   },
+   "dataPlatformInstance": null,
+   "deprecation": null,
+   "domain": {
+    "domain": {
+     "$ref": "urn:li:domain:sales"
+    }
+   },
+   "editableProperties": {
+    "description": "Order facts: one row per order, revenue in USD.",
+    "name": null
+   },
+   "editableSchemaMetadata": null,
+   "fineGrainedLineages": [
+    {
+     "downstreams": [
+      {
+       "path": "order_id",
+       "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)"
+      }
+     ],
+     "query": null,
+     "transformOperation": "IDENTITY",
+     "upstreams": [
+      {
+       "path": "order_id",
+       "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.staging.stg_orders,PROD)"
+      }
+     ]
+    },
+    {
+     "downstreams": [
+      {
+       "path": "gross_revenue",
+       "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)"
+      }
+     ],
+     "query": "urn:li:query:fct_orders_build",
+     "transformOperation": "SQL",
+     "upstreams": [
+      {
+       "path": "amount",
+       "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.staging.stg_orders,PROD)"
+      }
+     ]
+    }
+   ],
+   "glossaryTerms": {
+    "terms": [
+     {
+      "term": {
+       "$ref": "urn:li:glossaryTerm:gross_revenue"
+      }
+     }
+    ]
+   },
+   "lastIngested": 1773122400000,
+   "name": "analytics.marts.fct_orders",
+   "origin": "PROD",
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpGroup:analytics"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__technical_owner"
+      },
+      "type": "TECHNICAL_OWNER"
+     },
+     {
+      "owner": {
+       "$ref": "urn:li:corpuser:asmith"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__business_owner"
+      },
+      "type": "BUSINESS_OWNER"
+     }
+    ]
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:snowflake"
+   },
+   "properties": {
+    "created": null,
+    "customProperties": [],
+    "description": "One row per order with revenue.",
+    "externalUrl": null,
+    "lastModified": {
+     "actor": null,
+     "time": 0
+    },
+    "name": "fct_orders",
+    "origin": "PROD",
+    "qualifiedName": null
+   },
+   "schemaMetadata": {
+    "fields": [
+     {
+      "description": "Order key.",
+      "fieldPath": "order_id",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(38,0)",
+      "nullable": false,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "customer_id",
+      "globalTags": null,
+      "glossaryTerms": {
+       "terms": [
+        {
+         "term": {
+          "$ref": "urn:li:glossaryTerm:customer_id"
+         }
+        }
+       ]
+      },
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(38,0)",
+      "nullable": true,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "gross_revenue",
+      "globalTags": null,
+      "glossaryTerms": {
+       "terms": [
+        {
+         "term": {
+          "$ref": "urn:li:glossaryTerm:gross_revenue"
+         }
+        }
+       ]
+      },
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(14,2)",
+      "nullable": true,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "order_date",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "DATE",
+      "nullable": true,
+      "recursive": false,
+      "type": "DATE"
+     }
+    ],
+    "hash": "",
+    "name": "analytics.marts.fct_orders",
+    "platformUrn": "urn:li:dataPlatform:snowflake",
+    "primaryKeys": [
+     "order_id"
+    ],
+    "version": 0
+   },
+   "statsSummary": {
+    "queryCountLast30Days": 120,
+    "uniqueUserCountLast30Days": 2
+   },
+   "subTypes": {
+    "typeNames": [
+     "Table"
+    ]
+   },
+   "tags": {
+    "tags": [
+     {
+      "tag": {
+       "$ref": "urn:li:tag:tier1"
+      }
+     },
+     {
+      "tag": {
+       "$ref": "urn:li:tag:finance"
+      }
+     }
+    ]
+   },
+   "type": "DATASET",
+   "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)"
+  },
+  {
+   "container": {
+    "$ref": "urn:li:container:sf_marts"
+   },
+   "dataPlatformInstance": null,
+   "deprecation": {
+    "deprecated": true,
+    "note": "Use dim_customer_v2"
+   },
+   "domain": {
+    "domain": {
+     "$ref": "urn:li:domain:sales"
+    }
+   },
+   "editableProperties": null,
+   "editableSchemaMetadata": null,
+   "fineGrainedLineages": [],
+   "glossaryTerms": null,
+   "lastIngested": 1773122400000,
+   "name": "analytics.marts.dim_customers",
+   "origin": "PROD",
+   "ownership": null,
+   "platform": {
+    "$ref": "urn:li:dataPlatform:snowflake"
+   },
+   "properties": {
+    "created": null,
+    "customProperties": [],
+    "description": null,
+    "externalUrl": null,
+    "lastModified": {
+     "actor": null,
+     "time": 0
+    },
+    "name": "dim_customers",
+    "origin": "PROD",
+    "qualifiedName": null
+   },
+   "schemaMetadata": {
+    "fields": [
+     {
+      "description": null,
+      "fieldPath": "customer_id",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "NUMBER(38,0)",
+      "nullable": false,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "email",
+      "globalTags": {
+       "tags": [
+        {
+         "tag": {
+          "$ref": "urn:li:tag:pii"
+         }
+        }
+       ]
+      },
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "VARCHAR(256)",
+      "nullable": true,
+      "recursive": false,
+      "type": "STRING"
+     }
+    ],
+    "hash": "",
+    "name": "analytics.marts.dim_customers",
+    "platformUrn": "urn:li:dataPlatform:snowflake",
+    "primaryKeys": null,
+    "version": 0
+   },
+   "statsSummary": null,
+   "subTypes": {
+    "typeNames": [
+     "Table"
+    ]
+   },
+   "tags": null,
+   "type": "DATASET",
+   "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.dim_customers,PROD)"
+  },
+  {
+   "container": null,
+   "dataPlatformInstance": {
+    "instanceId": "prod-pg",
+    "platform": {
+     "$ref": "urn:li:dataPlatform:postgres"
+    },
+    "type": "DATA_PLATFORM_INSTANCE",
+    "urn": "urn:li:dataPlatformInstance:(urn:li:dataPlatform:postgres,prod-pg)"
+   },
+   "deprecation": null,
+   "domain": null,
+   "editableProperties": null,
+   "editableSchemaMetadata": null,
+   "fineGrainedLineages": [],
+   "glossaryTerms": null,
+   "lastIngested": 1773122400000,
+   "name": "prod-pg.app.public.users",
+   "origin": "PROD",
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpuser:former"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__technical_owner"
+      },
+      "type": "TECHNICAL_OWNER"
+     }
+    ]
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:postgres"
+   },
+   "properties": {
+    "created": null,
+    "customProperties": [],
+    "description": "Application users.",
+    "externalUrl": null,
+    "lastModified": {
+     "actor": null,
+     "time": 0
+    },
+    "name": "users",
+    "origin": "PROD",
+    "qualifiedName": null
+   },
+   "schemaMetadata": {
+    "fields": [
+     {
+      "description": null,
+      "fieldPath": "id",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "integer",
+      "nullable": false,
+      "recursive": false,
+      "type": "NUMBER"
+     },
+     {
+      "description": null,
+      "fieldPath": "email",
+      "globalTags": {
+       "tags": [
+        {
+         "tag": {
+          "$ref": "urn:li:tag:pii"
+         }
+        }
+       ]
+      },
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "text",
+      "nullable": true,
+      "recursive": false,
+      "type": "STRING"
+     }
+    ],
+    "hash": "",
+    "name": "prod-pg.app.public.users",
+    "platformUrn": "urn:li:dataPlatform:postgres",
+    "primaryKeys": null,
+    "version": 0
+   },
+   "statsSummary": null,
+   "subTypes": {
+    "typeNames": [
+     "Table"
+    ]
+   },
+   "tags": null,
+   "type": "DATASET",
+   "urn": "urn:li:dataset:(urn:li:dataPlatform:postgres,prod-pg.app.public.users,PROD)"
+  },
+  {
+   "container": null,
+   "dataPlatformInstance": null,
+   "deprecation": null,
+   "domain": {
+    "domain": {
+     "$ref": "urn:li:domain:marketing"
+    }
+   },
+   "editableProperties": null,
+   "editableSchemaMetadata": null,
+   "fineGrainedLineages": [],
+   "glossaryTerms": null,
+   "lastIngested": 1773122400000,
+   "name": "orders.events",
+   "origin": "PROD",
+   "ownership": null,
+   "platform": {
+    "$ref": "urn:li:dataPlatform:kafka"
+   },
+   "properties": {
+    "created": null,
+    "customProperties": [],
+    "description": "Order events stream.",
+    "externalUrl": null,
+    "lastModified": {
+     "actor": null,
+     "time": 0
+    },
+    "name": "orders.events",
+    "origin": "PROD",
+    "qualifiedName": null
+   },
+   "schemaMetadata": {
+    "fields": [
+     {
+      "description": null,
+      "fieldPath": "order_id",
+      "globalTags": null,
+      "glossaryTerms": null,
+      "isPartOfKey": false,
+      "nativeDataType": "long",
+      "nullable": true,
+      "recursive": false,
+      "type": "NUMBER"
+     }
+    ],
+    "hash": "",
+    "name": "orders.events",
+    "platformUrn": "urn:li:dataPlatform:kafka",
+    "primaryKeys": null,
+    "version": 0
+   },
+   "statsSummary": null,
+   "subTypes": {
+    "typeNames": [
+     "Topic"
+    ]
+   },
+   "tags": null,
+   "type": "DATASET",
+   "urn": "urn:li:dataset:(urn:li:dataPlatform:kafka,orders.events,PROD)"
+  },
+  {
+   "chartId": "34",
+   "container": null,
+   "domain": {
+    "domain": {
+     "$ref": "urn:li:domain:sales"
+    }
+   },
+   "editableProperties": null,
+   "glossaryTerms": null,
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpuser:asmith"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__technical_owner"
+      },
+      "type": "TECHNICAL_OWNER"
+     }
+    ]
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:looker"
+   },
+   "properties": {
+    "created": {
+     "time": 1761955200000
+    },
+    "description": null,
+    "externalUrl": "https://looker.example.com/looks/34",
+    "lastModified": {
+     "time": 1769904000000
+    },
+    "name": "Revenue by Day",
+    "type": "LINE"
+   },
+   "tags": null,
+   "tool": "looker",
+   "type": "CHART",
+   "urn": "urn:li:chart:(looker,34)"
+  },
+  {
+   "container": null,
+   "dashboardId": "12",
+   "domain": {
+    "domain": {
+     "$ref": "urn:li:domain:sales"
+    }
+   },
+   "editableProperties": null,
+   "glossaryTerms": null,
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpGroup:analytics"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__business_owner"
+      },
+      "type": "BUSINESS_OWNER"
+     }
+    ]
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:looker"
+   },
+   "properties": {
+    "created": {
+     "time": 1761955200000
+    },
+    "description": "Daily revenue.",
+    "externalUrl": "https://looker.example.com/dashboards/12",
+    "lastModified": {
+     "time": 1769904000000
+    },
+    "lastRefreshed": 1773039600000,
+    "name": "Sales Overview"
+   },
+   "statsSummary": {
+    "viewCount": 321
+   },
+   "tags": {
+    "tags": [
+     {
+      "tag": {
+       "$ref": "urn:li:tag:tier1"
+      }
+     }
+    ]
+   },
+   "tool": "looker",
+   "type": "DASHBOARD",
+   "urn": "urn:li:dashboard:(looker,12)"
+  },
+  {
+   "container": null,
+   "dashboardId": "99",
+   "domain": null,
+   "editableProperties": null,
+   "glossaryTerms": null,
+   "ownership": null,
+   "platform": {
+    "$ref": "urn:li:dataPlatform:looker"
+   },
+   "properties": {
+    "created": {
+     "time": 0
+    },
+    "description": null,
+    "externalUrl": null,
+    "lastModified": {
+     "time": 0
+    },
+    "lastRefreshed": null,
+    "name": "Scratch"
+   },
+   "statsSummary": {
+    "viewCount": 0
+   },
+   "tags": null,
+   "tool": "looker",
+   "type": "DASHBOARD",
+   "urn": "urn:li:dashboard:(looker,99)"
+  },
+  {
+   "cluster": "prod",
+   "container": null,
+   "domain": null,
+   "editableProperties": null,
+   "flowId": "elt_daily",
+   "glossaryTerms": null,
+   "orchestrator": "airflow",
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpGroup:data-eng"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__technical_owner"
+      },
+      "type": "TECHNICAL_OWNER"
+     }
+    ]
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:airflow"
+   },
+   "properties": {
+    "description": "Nightly ELT.",
+    "externalUrl": "https://airflow.example.com/dags/elt_daily",
+    "name": "elt_daily",
+    "project": null
+   },
+   "tags": null,
+   "type": "DATA_FLOW",
+   "urn": "urn:li:dataFlow:(airflow,elt_daily,prod)"
+  },
+  {
+   "container": null,
+   "dataFlow": {
+    "$ref": "urn:li:dataFlow:(airflow,elt_daily,prod)"
+   },
+   "domain": null,
+   "editableProperties": null,
+   "glossaryTerms": null,
+   "inputOutput": {
+    "fineGrainedLineages": [
+     {
+      "downstreams": [
+       {
+        "path": "email",
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.customers,PROD)"
+       }
+      ],
+      "query": null,
+      "transformOperation": "IDENTITY",
+      "upstreams": [
+       {
+        "path": "email",
+        "urn": "urn:li:dataset:(urn:li:dataPlatform:postgres,prod-pg.app.public.users,PROD)"
+       }
+      ]
+     }
+    ],
+    "inputDatajobs": [],
+    "inputDatasets": [
+     {
+      "$ref": "urn:li:dataset:(urn:li:dataPlatform:postgres,prod-pg.app.public.users,PROD)"
+     }
+    ],
+    "outputDatasets": [
+     {
+      "$ref": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.customers,PROD)"
+     }
+    ]
+   },
+   "jobId": "load_customers",
+   "ownership": {
+    "lastModified": {
+     "time": 1767225600000
+    },
+    "owners": [
+     {
+      "owner": {
+       "$ref": "urn:li:corpuser:jdoe"
+      },
+      "ownershipType": {
+       "$ref": "urn:li:ownershipType:__system__technical_owner"
+      },
+      "type": "TECHNICAL_OWNER"
+     }
+    ]
+   },
+   "platform": {
+    "$ref": "urn:li:dataPlatform:airflow"
+   },
+   "properties": {
+    "description": "Copy users to Snowflake.",
+    "externalUrl": "https://airflow.example.com/dags/elt_daily/load_customers",
+    "name": "load_customers"
+   },
+   "tags": null,
+   "type": "DATA_JOB",
+   "urn": "urn:li:dataJob:(urn:li:dataFlow:(airflow,elt_daily,prod),load_customers)"
+  }
+ ],
+ "lineage": [
+  {
+   "createdOn": 1768435200000,
+   "downstream": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.orders,PROD)",
+   "type": "DownstreamOf",
+   "upstream": "urn:li:dataset:(urn:li:dataPlatform:kafka,orders.events,PROD)"
+  },
+  {
+   "createdOn": 1768435200000,
+   "downstream": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.staging.stg_orders,PROD)",
+   "type": "DownstreamOf",
+   "upstream": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.orders,PROD)"
+  },
+  {
+   "createdOn": 1768435200000,
+   "downstream": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)",
+   "type": "DownstreamOf",
+   "upstream": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.staging.stg_orders,PROD)"
+  },
+  {
+   "createdOn": 1768435200000,
+   "downstream": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.dim_customers,PROD)",
+   "type": "DownstreamOf",
+   "upstream": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.customers,PROD)"
+  },
+  {
+   "createdOn": 1768435200000,
+   "downstream": "urn:li:dataJob:(urn:li:dataFlow:(airflow,elt_daily,prod),load_customers)",
+   "type": "Consumes",
+   "upstream": "urn:li:dataset:(urn:li:dataPlatform:postgres,prod-pg.app.public.users,PROD)"
+  },
+  {
+   "createdOn": 1768435200000,
+   "downstream": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.raw.customers,PROD)",
+   "type": "Produces",
+   "upstream": "urn:li:dataJob:(urn:li:dataFlow:(airflow,elt_daily,prod),load_customers)"
+  },
+  {
+   "createdOn": 1768435200000,
+   "downstream": "urn:li:chart:(looker,34)",
+   "type": "Consumes",
+   "upstream": "urn:li:dataset:(urn:li:dataPlatform:snowflake,analytics.marts.fct_orders,PROD)"
+  },
+  {
+   "createdOn": 1768435200000,
+   "downstream": "urn:li:dashboard:(looker,12)",
+   "type": "Contains",
+   "upstream": "urn:li:chart:(looker,34)"
+  }
+ ]
+}
