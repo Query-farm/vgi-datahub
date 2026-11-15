@@ -29,7 +29,9 @@ from datahub_worker.worker import ALL_TABLES, DatahubWorker
 
 ROOT = Path(__file__).resolve().parent.parent
 SCHEMA = build_schema(
-    "\n".join(Path(f).read_text() for f in sorted(glob.glob(str(ROOT / "test/datahub_schema/*.graphql"))))
+    "\n".join(
+        Path(f).read_text(encoding="utf-8") for f in sorted(glob.glob(str(ROOT / "test/datahub_schema/*.graphql")))
+    )
 )
 
 # ----------------------------------------------------------------------------- GraphQL documents

@@ -924,6 +924,7 @@ OUT.write_text(
         indent=1,
         sort_keys=True,
     )
-    + "\n"
+    + "\n",
+    encoding="utf-8",
 )
 print(f"wrote {OUT} ({len(entities)} entities)")

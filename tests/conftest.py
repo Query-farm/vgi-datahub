@@ -29,6 +29,7 @@ def _start_mock(env: dict[str, str]) -> tuple[subprocess.Popen[str], str]:
         [sys.executable, str(ROOT / "test" / "mock_datahub" / "server.py")],
         stdout=subprocess.PIPE,
         text=True,
+        encoding="utf-8",
         env={**os.environ, **env},
     )
     assert proc.stdout is not None

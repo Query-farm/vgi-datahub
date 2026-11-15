@@ -50,9 +50,11 @@ from graphql.language import OperationDefinitionNode
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = build_schema(
-    "\n".join(Path(f).read_text() for f in sorted(glob.glob(str(ROOT / "test/datahub_schema/*.graphql"))))
+    "\n".join(
+        Path(f).read_text(encoding="utf-8") for f in sorted(glob.glob(str(ROOT / "test/datahub_schema/*.graphql")))
+    )
 )
-FIXTURE = json.loads((ROOT / "test/fixtures/datahub.json").read_text())
+FIXTURE = json.loads((ROOT / "test/fixtures/datahub.json").read_text(encoding="utf-8"))
 
 ALLOWED_OPERATIONS = {
     f"vgi{stem}{kind}"
