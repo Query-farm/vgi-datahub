@@ -32,7 +32,7 @@ graph through DataHub's GraphQL API and exposes it as typed DuckDB tables, read-
 ```sql
 INSTALL vgi FROM community;
 LOAD vgi;
-ATTACH 'datahub' (TYPE vgi, LOCATION 'uvx --from git+https://github.com/Query-farm/vgi-datahub@v0.1.0 vgi-datahub-worker');
+ATTACH 'datahub' (TYPE vgi, LOCATION 'uvx --from git+https://github.com/Query-farm/vgi-datahub@v0.1.1 vgi-datahub-worker');
 
 CREATE SECRET datahub (TYPE datahub, GMS_URL 'http://localhost:8080', TOKEN '<personal access token>');
 
