@@ -1,6 +1,6 @@
 [project]
 name = "vgi-datahub-worker"
-version = "0.1.2"
+version = "0.1.3"
 description = "DataHub metadata catalog (datasets, lineage, glossary, assertions, usage) as DuckDB SQL: a Query.Farm VGI worker."
 readme = "README.md"
 license = "0BSD"
