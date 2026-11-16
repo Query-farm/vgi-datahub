@@ -186,7 +186,7 @@ def ts(millis: Any) -> datetime | None:
         return None
     try:
         return datetime.fromtimestamp(int(millis) / 1000.0, tz=UTC)
-    except (TypeError, ValueError, OverflowError, OSError):
+    except TypeError, ValueError, OverflowError, OSError:
         return None
 
 
