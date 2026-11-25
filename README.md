@@ -32,7 +32,7 @@ graph through DataHub's GraphQL API and exposes it as typed DuckDB tables, read-
 ```sql
 INSTALL vgi FROM community;
 LOAD vgi;
-ATTACH 'datahub' (TYPE vgi, LOCATION 'uvx --from git+https://github.com/Query-farm/vgi-datahub@v0.1.3 vgi-datahub-worker');
+ATTACH 'datahub' (TYPE vgi, LOCATION 'uvx --from git+https://github.com/Query-farm/vgi-datahub@v0.2.0 vgi-datahub-worker');
 
 CREATE SECRET datahub (TYPE datahub, GMS_URL 'http://localhost:8080', TOKEN '<personal access token>');
 
@@ -65,6 +65,8 @@ LOAD vgi FROM query_farm;
 
 From a source checkout: `make build`, then
 `LOCATION '/abs/path/to/vgi-datahub/.venv/bin/vgi-datahub-worker'`.
+
+vgi-datahub 0.2.0 speaks VGI protocol 3.4, so it needs Haybarn 2.0.1 or newer (Haybarn 2.0.0 loads a 3.3 `vgi` extension that cannot attach it).
 
 ## Connect to DataHub
 
